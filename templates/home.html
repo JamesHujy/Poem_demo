@@ -1,0 +1,120 @@
+<!doctype html>
+<title>Example</title>
+<style>
+* {
+  box-sizing: border-box; 
+}
+body {
+  display: flex;
+  min-height: 300vh;
+  flex-direction: column;
+  margin: 0;
+}
+#main {
+  display: flex;
+  flex: 1;
+}
+#main > article {
+  flex: 1;
+}
+#main > nav, 
+#main > aside {
+  flex: 0 0 40vw;
+  background: beige;
+}
+#main > nav {
+  order: -1;
+}
+header, footer {
+  background: yellowgreen;
+  height: 20vh;
+}
+header, footer, article, nav, aside {
+  padding: 1em;
+}
+</style>
+{% if data %}
+{{data | safe}}
+{% endif %}
+
+
+<body>
+  <header>
+  	<center>
+  <form action="/external/" method="post">
+{% csrf_token %}
+  	输入主题<input type="text" name="topic" value="{{topic}}" required> <br>
+	   体  裁
+	<input type="radio" name="genre" value="wuyanjue" >五言绝句
+	<input type="radio" name="genre" value="qiyanjue" >七言绝句
+	<input type="radio" name="genre" value="wuyanlv" >五言律诗
+	<input type="radio" name="genre" value="qiyanlv" checked>七言律诗
+	<br>
+	<br>
+	<input type="submit" value="生成" name="generated" style='font-size:60px'><br><br>
+    </center>
+	</header>
+	<br>
+  <br>
+  <div>
+	<center>
+
+	{% for sentence in Poem %}
+    	<font size="4">{{sentence}} </font><br>
+    	{% endfor %}
+    </center>
+  </div>
+  </form>
+  <br>
+  <br>
+  <br>
+  <br>
+
+<form action="/prob/" method="post">
+{% csrf_token %}
+<center>
+{% if generated %}
+  <div>
+    <center>
+    查看概率个数<input type="text" name="prob_num" value="100" required> <br>
+    查看位置
+    行：<select name="Rowselected">
+    {% for i in Row%}
+      <option value="{{i}}">{{i}}</option>
+    {% endfor %}
+    </select>
+    列：<select name="Columnselected">
+    {% for i in Column%}
+      <option value="{{i}}">{{i}}</option>
+    {% endfor %}
+    </select>
+    <br>
+    <input type="submit" value="查看" name="check" style='font-size:60px'><br><br>
+  </center>
+  <div id="main">
+    <nav> 	
+    <center>
+    (作诗模型概率分布)<br>
+    {{poem_model_history}}<br>
+    {% for prob in PoemModel%}
+    {{prob}}<br>
+    {% endfor %}
+  </center>
+    </nav>
+    <aside>
+    <center>
+    (语言模型概率分布)<br>
+    {{lang_model_history}}<br>
+    {% for prob in LangModel%}
+    {{prob}}<br>
+    {% endfor %}
+  </center>
+    </aside>
+  </div>
+</div>
+{% endif %}
+</center>
+</form>
+
+
+</body>
